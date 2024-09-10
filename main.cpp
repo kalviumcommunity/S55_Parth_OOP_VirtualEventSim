@@ -10,7 +10,7 @@ private:
     string endTime;
 
 public:
-    Session(string title, string speaker, string startTime, string endTime)
+    Session(string title = "", string speaker = "", string startTime = "", string endTime = "")
         : title(title), speaker(speaker), startTime(startTime), endTime(endTime) {}
 
     void displayDetails() const {
@@ -21,10 +21,6 @@ public:
     string getTitle() const {
         return this->title;
     }
-
-    Session& getSession() {
-        return *this; 
-    }
 };
 
 class Attendee {
@@ -32,7 +28,7 @@ private:
     string name;
 
 public:
-    Attendee(string name) : name(name) {}
+    Attendee(string name = "") : name(name) {}
 
     void attendSession(const Session& session) const {
         cout << this->name << " is attending session: " << session.getTitle() << endl;
@@ -41,10 +37,6 @@ public:
     void displayDetails() const {
         cout << "Attendee Name: " << this->name << endl;
     }
-
-    const Attendee& getThisAttendee() const {
-        return *this; 
-    }
 };
 
 class Speaker {
@@ -52,23 +44,19 @@ private:
     string name;
 
 public:
-    Speaker(string name) : name(name) {}
+    Speaker(string name = "") : name(name) {}
 
     void displayDetails() const {
         cout << "Speaker Name: " << this->name << endl;
-    }
-
-    Speaker& getThisSpeaker() {
-        return *this;
     }
 };
 
 class Event {
 private:
     string eventName;
-    Session* sessions[2];  
-    Attendee* attendees[2]; 
-    Speaker* speakers[2];  
+    Session* sessions[2];  // Fixed-size array for sessions
+    Attendee* attendees[2]; // Fixed-size array for attendees
+    Speaker* speakers[2];   // Fixed-size array for speakers
     int sessionCount;
     int attendeeCount;
     int speakerCount;
@@ -78,19 +66,19 @@ public:
 
     void addSession(Session* session) {
         if (this->sessionCount < 2) {
-            this->sessions[this->sessionCount++] = session;  
+            this->sessions[this->sessionCount++] = session;  // Using this pointer
         }
     }
 
     void registerAttendee(Attendee* attendee) {
         if (this->attendeeCount < 2) {
-            this->attendees[this->attendeeCount++] = attendee;  
+            this->attendees[this->attendeeCount++] = attendee;  // Using this pointer
         }
     }
 
     void addSpeaker(Speaker* speaker) {
         if (this->speakerCount < 2) {
-            this->speakers[this->speakerCount++] = speaker;  
+            this->speakers[this->speakerCount++] = speaker;  // Using this pointer
         }
     }
 
@@ -98,48 +86,57 @@ public:
         cout << "Event: " << this->eventName << endl;
         cout << "Sessions:" << endl;
         for (int i = 0; i < this->sessionCount; ++i) {
-            this->sessions[i]->displayDetails(); 
+            this->sessions[i]->displayDetails(); // Accessing member via this
             cout << endl;
         }
 
         cout << "Attendees:" << endl;
         for (int i = 0; i < this->attendeeCount; ++i) {
-            this->attendees[i]->displayDetails(); 
+            this->attendees[i]->displayDetails(); // Accessing member via this
             cout << endl;
         }
 
         cout << "Speakers:" << endl;
         for (int i = 0; i < this->speakerCount; ++i) {
-            this->speakers[i]->displayDetails(); 
+            this->speakers[i]->displayDetails(); // Accessing member via this
             cout << endl;
         }
-    }
-
-    Event& getThisEvent() {
-        return *this; // Returning current object by reference
     }
 };
 
 int main() {
     Event event("Tech Conference 2024");
 
-    Session keynote("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
-    Session workshop("Workshop: AI and Machine Learning", "Jane Smith", "11:30 AM", "1:00 PM");
-    event.addSession(&keynote);
-    event.addSession(&workshop);
+    // Array of Session objects
+    Session sessionsArray[2] = {
+        Session("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM"),
+        Session("Workshop: AI and Machine Learning", "Jane Smith", "11:30 AM", "1:00 PM")
+    };
 
-    Attendee attendee1("Alice");
-    Attendee attendee2("Bob");
-    event.registerAttendee(&attendee1);
-    event.registerAttendee(&attendee2);
+    for (int i = 0; i < 2; ++i) {
+        event.addSession(&sessionsArray[i]);
+    }
 
-    Speaker speaker1("John Doe");
-    Speaker speaker2("Jane Smith");
-    event.addSpeaker(&speaker1);
-    event.addSpeaker(&speaker2);
+    Attendee attendeeArray[2] = {
+        Attendee("Alice"),
+        Attendee("Bob")
+    };
 
-    attendee1.attendSession(keynote);
-    attendee2.attendSession(workshop);
+    for (int i = 0; i < 2; ++i) {
+        event.registerAttendee(&attendeeArray[i]);
+    }
+
+    Speaker speakerArray[2] = {
+        Speaker("John Doe"),
+        Speaker("Jane Smith")
+    };
+
+    for (int i = 0; i < 2; ++i) {
+        event.addSpeaker(&speakerArray[i]);
+    }
+
+    attendeeArray[0].attendSession(sessionsArray[0]);
+    attendeeArray[1].attendSession(sessionsArray[1]);
 
     event.showEventDetails();
 
