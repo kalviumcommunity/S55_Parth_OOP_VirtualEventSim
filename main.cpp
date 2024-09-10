@@ -10,16 +10,20 @@ private:
     string endTime;
 
 public:
-    Session(string sessionTitle, string sessionSpeaker, string start, string end)
-        : title(sessionTitle), speaker(sessionSpeaker), startTime(start), endTime(end) {}
+    Session(string title, string speaker, string startTime, string endTime)
+        : title(title), speaker(speaker), startTime(startTime), endTime(endTime) {}
 
     void displayDetails() const {
-        cout << "Session: " << title << "\nSpeaker: " << speaker 
-             << "\nTime: " << startTime << " - " << endTime << endl;
+        cout << "Session: " << this->title << "\nSpeaker: " << this->speaker 
+             << "\nTime: " << this->startTime << " - " << this->endTime << endl;
     }
 
     string getTitle() const {
-        return title;
+        return this->title;
+    }
+
+    Session& getSession() {
+        return *this; 
     }
 };
 
@@ -28,14 +32,18 @@ private:
     string name;
 
 public:
-    Attendee(string attendeeName) : name(attendeeName) {}
+    Attendee(string name) : name(name) {}
 
     void attendSession(const Session& session) const {
-        cout << name << " is attending session: " << session.getTitle() << endl;
+        cout << this->name << " is attending session: " << session.getTitle() << endl;
     }
 
     void displayDetails() const {
-        cout << "Attendee Name: " << name << endl;
+        cout << "Attendee Name: " << this->name << endl;
+    }
+
+    const Attendee& getThisAttendee() const {
+        return *this; 
     }
 };
 
@@ -44,19 +52,23 @@ private:
     string name;
 
 public:
-    Speaker(string speakerName) : name(speakerName) {}
+    Speaker(string name) : name(name) {}
 
     void displayDetails() const {
-        cout << "Speaker Name: " << name << endl;
+        cout << "Speaker Name: " << this->name << endl;
+    }
+
+    Speaker& getThisSpeaker() {
+        return *this;
     }
 };
 
 class Event {
 private:
     string eventName;
-    Session* sessions[2];  // Fixed-size array for sessions
-    Attendee* attendees[2]; // Fixed-size array for attendees
-    Speaker* speakers[2];   // Fixed-size array for speakers
+    Session* sessions[2];  
+    Attendee* attendees[2]; 
+    Speaker* speakers[2];  
     int sessionCount;
     int attendeeCount;
     int speakerCount;
@@ -65,42 +77,46 @@ public:
     Event(string name) : eventName(name), sessionCount(0), attendeeCount(0), speakerCount(0) {}
 
     void addSession(Session* session) {
-        if (sessionCount < 2) {
-            sessions[sessionCount++] = session;
+        if (this->sessionCount < 2) {
+            this->sessions[this->sessionCount++] = session;  
         }
     }
 
     void registerAttendee(Attendee* attendee) {
-        if (attendeeCount < 2) {
-            attendees[attendeeCount++] = attendee;
+        if (this->attendeeCount < 2) {
+            this->attendees[this->attendeeCount++] = attendee;  
         }
     }
 
     void addSpeaker(Speaker* speaker) {
-        if (speakerCount < 2) {
-            speakers[speakerCount++] = speaker;
+        if (this->speakerCount < 2) {
+            this->speakers[this->speakerCount++] = speaker;  
         }
     }
 
     void showEventDetails() const {
-        cout << "Event: " << eventName << endl;
+        cout << "Event: " << this->eventName << endl;
         cout << "Sessions:" << endl;
-        for (int i = 0; i < sessionCount; ++i) {
-            sessions[i]->displayDetails();
+        for (int i = 0; i < this->sessionCount; ++i) {
+            this->sessions[i]->displayDetails(); 
             cout << endl;
         }
 
         cout << "Attendees:" << endl;
-        for (int i = 0; i < attendeeCount; ++i) {
-            attendees[i]->displayDetails();
+        for (int i = 0; i < this->attendeeCount; ++i) {
+            this->attendees[i]->displayDetails(); 
             cout << endl;
         }
 
         cout << "Speakers:" << endl;
-        for (int i = 0; i < speakerCount; ++i) {
-            speakers[i]->displayDetails();
+        for (int i = 0; i < this->speakerCount; ++i) {
+            this->speakers[i]->displayDetails(); 
             cout << endl;
         }
+    }
+
+    Event& getThisEvent() {
+        return *this; // Returning current object by reference
     }
 };
 
