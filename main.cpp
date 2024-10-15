@@ -10,6 +10,7 @@ private:
     string endTime;
 
 public:
+    // Constructor
     Session(string title = "", string speaker = "", string startTime = "", string endTime = "")
         : title(title), speaker(speaker), startTime(startTime), endTime(endTime) {}
 
@@ -28,6 +29,7 @@ private:
     string name;
 
 public:
+    // Constructor
     Attendee(string name = "") : name(name) {}
 
     void attendSession(const Session& session) const {
@@ -44,6 +46,7 @@ private:
     string name;
 
 public:
+    // Constructor
     Speaker(string name = "") : name(name) {}
 
     void displayDetails() const {
@@ -62,23 +65,24 @@ private:
     int speakerCount;
 
 public:
+    // Constructor
     Event(string name) : eventName(name), sessionCount(0), attendeeCount(0), speakerCount(0) {}
 
     void addSession(Session* session) {
         if (this->sessionCount < 2) {
-            this->sessions[this->sessionCount++] = session;  // Using this pointer
+            this->sessions[this->sessionCount++] = session;
         }
     }
 
     void registerAttendee(Attendee* attendee) {
         if (this->attendeeCount < 2) {
-            this->attendees[this->attendeeCount++] = attendee;  // Using this pointer
+            this->attendees[this->attendeeCount++] = attendee;
         }
     }
 
     void addSpeaker(Speaker* speaker) {
         if (this->speakerCount < 2) {
-            this->speakers[this->speakerCount++] = speaker;  // Using this pointer
+            this->speakers[this->speakerCount++] = speaker;
         }
     }
 
@@ -86,59 +90,70 @@ public:
         cout << "Event: " << this->eventName << endl;
         cout << "Sessions:" << endl;
         for (int i = 0; i < this->sessionCount; ++i) {
-            this->sessions[i]->displayDetails(); // Accessing member via this
+            this->sessions[i]->displayDetails();
             cout << endl;
         }
 
         cout << "Attendees:" << endl;
         for (int i = 0; i < this->attendeeCount; ++i) {
-            this->attendees[i]->displayDetails(); // Accessing member via this
+            this->attendees[i]->displayDetails();
             cout << endl;
         }
 
         cout << "Speakers:" << endl;
         for (int i = 0; i < this->speakerCount; ++i) {
-            this->speakers[i]->displayDetails(); // Accessing member via this
+            this->speakers[i]->displayDetails();
             cout << endl;
+        }
+    }
+
+    // Destructor to release dynamically allocated memory
+    ~Event() {
+        for (int i = 0; i < sessionCount; ++i) {
+            delete sessions[i]; // Free memory allocated for sessions
+        }
+        for (int i = 0; i < attendeeCount; ++i) {
+            delete attendees[i]; // Free memory allocated for attendees
+        }
+        for (int i = 0; i < speakerCount; ++i) {
+            delete speakers[i]; // Free memory allocated for speakers
         }
     }
 };
 
 int main() {
-    Event event("Tech Conference 2024");
+    // Dynamically allocate memory for Event
+    Event* event = new Event("Tech Conference 2024");
 
-    // Array of Session objects
-    Session sessionsArray[2] = {
-        Session("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM"),
-        Session("Workshop: AI and Machine Learning", "Jane Smith", "11:30 AM", "1:00 PM")
-    };
+    // Dynamically allocate Sessions
+    Session* session1 = new Session("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
+    Session* session2 = new Session("Workshop: AI and Machine Learning", "Jane Smith", "11:30 AM", "1:00 PM");
 
-    for (int i = 0; i < 2; ++i) {
-        event.addSession(&sessionsArray[i]);
-    }
+    event->addSession(session1);
+    event->addSession(session2);
 
-    Attendee attendeeArray[2] = {
-        Attendee("Alice"),
-        Attendee("Bob")
-    };
+    // Dynamically allocate Attendees
+    Attendee* attendee1 = new Attendee("Kalvium");
+    Attendee* attendee2 = new Attendee("Parth");
 
-    for (int i = 0; i < 2; ++i) {
-        event.registerAttendee(&attendeeArray[i]);
-    }
+    event->registerAttendee(attendee1);
+    event->registerAttendee(attendee2);
 
-    Speaker speakerArray[2] = {
-        Speaker("John Doe"),
-        Speaker("Jane Smith")
-    };
+    // Dynamically allocate Speakers
+    Speaker* speaker1 = new Speaker("Program mentor");
+    Speaker* speaker2 = new Speaker("Technical mentor");
 
-    for (int i = 0; i < 2; ++i) {
-        event.addSpeaker(&speakerArray[i]);
-    }
+    event->addSpeaker(speaker1);
+    event->addSpeaker(speaker2);
 
-    attendeeArray[0].attendSession(sessionsArray[0]);
-    attendeeArray[1].attendSession(sessionsArray[1]);
+    attendee1->attendSession(*session1);
+    attendee2->attendSession(*session2);
 
-    event.showEventDetails();
+    // Display all event details
+    event->showEventDetails();
+
+    // Free dynamically allocated memory
+    delete event; // This also deletes all sessions, attendees, and speakers due to the destructor
 
     return 0;
 }
