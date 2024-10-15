@@ -17,8 +17,9 @@ public:
         sessionCount++;  // Increment session count when a session is created
     }
 
-    static int getSessionCount() {
-        return sessionCount;  // Static method to return session count
+    // Static function to get the total session count
+    static void displaySessionCount() {
+        cout << "Total Sessions Created: " << sessionCount << endl;
     }
 
     void displayDetails() const {
@@ -49,8 +50,9 @@ public:
         attendeeCount++;  // Increment attendee count when an attendee is registered
     }
 
-    static int getAttendeeCount() {
-        return attendeeCount;  // Static method to return attendee count
+    // Static function to get the total attendee count
+    static void displayAttendeeCount() {
+        cout << "Total Attendees Registered: " << attendeeCount << endl;
     }
 
     void attendSession(const Session& session) const {
@@ -133,9 +135,9 @@ public:
             cout << endl;
         }
 
-        // Display static counts
-        cout << "Total Sessions: " << Session::getSessionCount() << endl;
-        cout << "Total Attendees: " << Attendee::getAttendeeCount() << endl;
+        // Display static counts using static functions
+        Session::displaySessionCount();
+        Attendee::displayAttendeeCount();
     }
 
     // Destructor to release dynamically allocated memory
