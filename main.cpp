@@ -8,11 +8,18 @@ private:
     string speaker;
     string startTime;
     string endTime;
+    static int sessionCount;  // Static variable to track the number of sessions
 
 public:
     // Constructor
     Session(string title = "", string speaker = "", string startTime = "", string endTime = "")
-        : title(title), speaker(speaker), startTime(startTime), endTime(endTime) {}
+        : title(title), speaker(speaker), startTime(startTime), endTime(endTime) {
+        sessionCount++;  // Increment session count when a session is created
+    }
+
+    static int getSessionCount() {
+        return sessionCount;  // Static method to return session count
+    }
 
     void displayDetails() const {
         cout << "Session: " << this->title << "\nSpeaker: " << this->speaker 
@@ -22,15 +29,29 @@ public:
     string getTitle() const {
         return this->title;
     }
+
+    ~Session() {
+        sessionCount--;  // Decrement session count when a session is destroyed
+    }
 };
+
+// Initialize static variable
+int Session::sessionCount = 0;
 
 class Attendee {
 private:
     string name;
+    static int attendeeCount;  // Static variable to track number of attendees
 
 public:
     // Constructor
-    Attendee(string name = "") : name(name) {}
+    Attendee(string name = "") : name(name) {
+        attendeeCount++;  // Increment attendee count when an attendee is registered
+    }
+
+    static int getAttendeeCount() {
+        return attendeeCount;  // Static method to return attendee count
+    }
 
     void attendSession(const Session& session) const {
         cout << this->name << " is attending session: " << session.getTitle() << endl;
@@ -39,14 +60,20 @@ public:
     void displayDetails() const {
         cout << "Attendee Name: " << this->name << endl;
     }
+
+    ~Attendee() {
+        attendeeCount--;  // Decrement attendee count when an attendee is deregistered
+    }
 };
+
+// Initialize static variable
+int Attendee::attendeeCount = 0;
 
 class Speaker {
 private:
     string name;
 
 public:
-    // Constructor
     Speaker(string name = "") : name(name) {}
 
     void displayDetails() const {
@@ -105,6 +132,10 @@ public:
             this->speakers[i]->displayDetails();
             cout << endl;
         }
+
+        // Display static counts
+        cout << "Total Sessions: " << Session::getSessionCount() << endl;
+        cout << "Total Attendees: " << Attendee::getAttendeeCount() << endl;
     }
 
     // Destructor to release dynamically allocated memory
