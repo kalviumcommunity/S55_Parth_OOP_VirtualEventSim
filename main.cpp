@@ -22,13 +22,29 @@ public:
         cout << "Total Sessions Created: " << sessionCount << endl;
     }
 
+    // Accessor (getter) for title
+    string getTitle() const {
+        return this->title;
+    }
+
+    // Mutator (setter) for title
+    void setTitle(const string& newTitle) {
+        this->title = newTitle;
+    }
+
+    // Accessor (getter) for speaker
+    string getSpeaker() const {
+        return this->speaker;
+    }
+
+    // Mutator (setter) for speaker
+    void setSpeaker(const string& newSpeaker) {
+        this->speaker = newSpeaker;
+    }
+
     void displayDetails() const {
         cout << "Session: " << this->title << "\nSpeaker: " << this->speaker 
              << "\nTime: " << this->startTime << " - " << this->endTime << endl;
-    }
-
-    string getTitle() const {
-        return this->title;
     }
 
     ~Session() {
@@ -55,6 +71,16 @@ public:
         cout << "Total Attendees Registered: " << attendeeCount << endl;
     }
 
+    // Accessor (getter) for name
+    string getName() const {
+        return this->name;
+    }
+
+    // Mutator (setter) for name
+    void setName(const string& newName) {
+        this->name = newName;
+    }
+
     void attendSession(const Session& session) const {
         cout << this->name << " is attending session: " << session.getTitle() << endl;
     }
@@ -71,122 +97,41 @@ public:
 // Initialize static variable
 int Attendee::attendeeCount = 0;
 
-class Speaker {
-private:
-    string name;
-
-public:
-    Speaker(string name = "") : name(name) {}
-
-    void displayDetails() const {
-        cout << "Speaker Name: " << this->name << endl;
-    }
-};
-
-class Event {
-private:
-    string eventName;
-    Session* sessions[2];  // Fixed-size array for sessions
-    Attendee* attendees[2]; // Fixed-size array for attendees
-    Speaker* speakers[2];   // Fixed-size array for speakers
-    int sessionCount;
-    int attendeeCount;
-    int speakerCount;
-
-public:
-    // Constructor
-    Event(string name) : eventName(name), sessionCount(0), attendeeCount(0), speakerCount(0) {}
-
-    void addSession(Session* session) {
-        if (this->sessionCount < 2) {
-            this->sessions[this->sessionCount++] = session;
-        }
-    }
-
-    void registerAttendee(Attendee* attendee) {
-        if (this->attendeeCount < 2) {
-            this->attendees[this->attendeeCount++] = attendee;
-        }
-    }
-
-    void addSpeaker(Speaker* speaker) {
-        if (this->speakerCount < 2) {
-            this->speakers[this->speakerCount++] = speaker;
-        }
-    }
-
-    void showEventDetails() const {
-        cout << "Event: " << this->eventName << endl;
-        cout << "Sessions:" << endl;
-        for (int i = 0; i < this->sessionCount; ++i) {
-            this->sessions[i]->displayDetails();
-            cout << endl;
-        }
-
-        cout << "Attendees:" << endl;
-        for (int i = 0; i < this->attendeeCount; ++i) {
-            this->attendees[i]->displayDetails();
-            cout << endl;
-        }
-
-        cout << "Speakers:" << endl;
-        for (int i = 0; i < this->speakerCount; ++i) {
-            this->speakers[i]->displayDetails();
-            cout << endl;
-        }
-
-        // Display static counts using static functions
-        Session::displaySessionCount();
-        Attendee::displayAttendeeCount();
-    }
-
-    // Destructor to release dynamically allocated memory
-    ~Event() {
-        for (int i = 0; i < sessionCount; ++i) {
-            delete sessions[i]; // Free memory allocated for sessions
-        }
-        for (int i = 0; i < attendeeCount; ++i) {
-            delete attendees[i]; // Free memory allocated for attendees
-        }
-        for (int i = 0; i < speakerCount; ++i) {
-            delete speakers[i]; // Free memory allocated for speakers
-        }
-    }
-};
-
 int main() {
-    // Dynamically allocate memory for Event
-    Event* event = new Event("Tech Conference 2024");
-
     // Dynamically allocate Sessions
     Session* session1 = new Session("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
     Session* session2 = new Session("Workshop: AI and Machine Learning", "Jane Smith", "11:30 AM", "1:00 PM");
 
-    event->addSession(session1);
-    event->addSession(session2);
+    // Using the mutator methods to modify session titles
+    session1->setTitle("Keynote: The Future of Tech");
+    session2->setSpeaker("Dr. Jane Smith");
 
     // Dynamically allocate Attendees
     Attendee* attendee1 = new Attendee("Kalvium");
     Attendee* attendee2 = new Attendee("Parth");
 
-    event->registerAttendee(attendee1);
-    event->registerAttendee(attendee2);
-
-    // Dynamically allocate Speakers
-    Speaker* speaker1 = new Speaker("Program mentor");
-    Speaker* speaker2 = new Speaker("Technical mentor");
-
-    event->addSpeaker(speaker1);
-    event->addSpeaker(speaker2);
+    // Using the mutator methods to modify attendee names
+    attendee1->setName("Kalvium Tech Enthusiast");
+    attendee2->setName("Parth Shah");
 
     attendee1->attendSession(*session1);
     attendee2->attendSession(*session2);
 
-    // Display all event details
-    event->showEventDetails();
+    // Display details after modification
+    session1->displayDetails();
+    session2->displayDetails();
+    attendee1->displayDetails();
+    attendee2->displayDetails();
+
+    // Display static counts using static functions
+    Session::displaySessionCount();
+    Attendee::displayAttendeeCount();
 
     // Free dynamically allocated memory
-    delete event; // This also deletes all sessions, attendees, and speakers due to the destructor
+    delete session1;
+    delete session2;
+    delete attendee1;
+    delete attendee2;
 
     return 0;
 }
