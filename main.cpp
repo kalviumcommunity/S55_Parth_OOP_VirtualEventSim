@@ -8,41 +8,36 @@ private:
     string speaker;
     string startTime;
     string endTime;
-    static int sessionCount;  // Private static variable to track session count
-
-    // Private function to format session details
-    string formatDetails() const {
-        return "Session: " + title + "\nSpeaker: " + speaker + "\nTime: " + startTime + " - " + endTime;
-    }
+    static int sessionCount;  // Static variable to track the number of sessions
 
 public:
-    // Constructor (public interface)
-    Session(string title = "", string speaker = "", string startTime = "", string endTime = "")
-        : title(title), speaker(speaker), startTime(startTime), endTime(endTime) {
-        sessionCount++;  // Increment session count when a session is created
+    // Default Constructor (Type 1)
+    Session() : title(""), speaker(""), startTime(""), endTime("") {
+        sessionCount++;
+        cout << "Default Constructor called for Session" << endl;
     }
 
-    // Public static function to display session count (relevant info exposed)
+    // Parameterized Constructor (Type 2)
+    Session(string title, string speaker, string startTime, string endTime) 
+        : title(title), speaker(speaker), startTime(startTime), endTime(endTime) {
+        sessionCount++;
+        cout << "Parameterized Constructor called for Session" << endl;
+    }
+
+    // Destructor
+    ~Session() {
+        sessionCount--;
+        cout << "Destructor called for Session" << endl;
+    }
+
+    // Static function to get the total session count
     static void displaySessionCount() {
         cout << "Total Sessions Created: " << sessionCount << endl;
     }
 
-    // Public function to access formatted session details (abstraction of internal formatting logic)
     void displayDetails() const {
-        cout << formatDetails() << endl;
-    }
-
-    // Public accessor and mutator for title (relevant interface)
-    string getTitle() const {
-        return title;
-    }
-
-    void setTitle(const string& newTitle) {
-        title = newTitle;
-    }
-
-    ~Session() {
-        sessionCount--;  // Decrement session count when a session is destroyed
+        cout << "Session: " << this->title << "\nSpeaker: " << this->speaker 
+             << "\nTime: " << this->startTime << " - " << this->endTime << endl;
     }
 };
 
@@ -52,35 +47,38 @@ int Session::sessionCount = 0;
 class Attendee {
 private:
     string name;
-    static int attendeeCount;  // Private static variable to track attendee count
+    static int attendeeCount;  // Static variable to track number of attendees
 
 public:
-    // Constructor (public interface)
-    Attendee(string name = "") : name(name) {
-        attendeeCount++;  // Increment attendee count when an attendee is registered
+    // Default Constructor (Type 1)
+    Attendee() : name("Unknown") {
+        attendeeCount++;
+        cout << "Default Constructor called for Attendee" << endl;
     }
 
-    // Public static function to display attendee count (relevant info exposed)
+    // Parameterized Constructor (Type 2)
+    Attendee(string name) : name(name) {
+        attendeeCount++;
+        cout << "Parameterized Constructor called for Attendee" << endl;
+    }
+
+    // Destructor
+    ~Attendee() {
+        attendeeCount--;
+        cout << "Destructor called for Attendee" << endl;
+    }
+
+    // Static function to get the total attendee count
     static void displayAttendeeCount() {
         cout << "Total Attendees Registered: " << attendeeCount << endl;
     }
 
-    // Public function to allow attending a session (simplified interaction)
     void attendSession(const Session& session) const {
-        cout << name << " is attending session: " << session.getTitle() << endl;
+        cout << this->name << " is attending session: " << session.displayDetails() << endl;
     }
 
-    // Public accessor and mutator for name (relevant interface)
-    string getName() const {
-        return name;
-    }
-
-    void setName(const string& newName) {
-        name = newName;
-    }
-
-    ~Attendee() {
-        attendeeCount--;  // Decrement attendee count when an attendee is deregistered
+    void displayDetails() const {
+        cout << "Attendee Name: " << this->name << endl;
     }
 };
 
@@ -88,30 +86,22 @@ public:
 int Attendee::attendeeCount = 0;
 
 int main() {
-    // Dynamically allocate Sessions
-    Session* session1 = new Session("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
-    Session* session2 = new Session("Workshop: AI and Machine Learning", "Jane Smith", "11:30 AM", "1:00 PM");
+    // Using the Default Constructor
+    Session session1;
+    Attendee attendee1;
 
-    // Dynamically allocate Attendees
-    Attendee* attendee1 = new Attendee("Kalvium");
-    Attendee* attendee2 = new Attendee("Parth");
+    // Using the Parameterized Constructor
+    Session session2("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
+    Attendee attendee2("Parth");
 
-    // Demonstrate abstraction by calling public methods (internal details hidden)
-    session1->displayDetails();
-    session2->displayDetails();
+    // Display details and counts
+    session1.displayDetails();
+    session2.displayDetails();
+    attendee1.displayDetails();
+    attendee2.displayDetails();
 
-    attendee1->attendSession(*session1);
-    attendee2->attendSession(*session2);
-
-    // Display static counts using public static functions
     Session::displaySessionCount();
     Attendee::displayAttendeeCount();
-
-    // Free dynamically allocated memory
-    delete session1;
-    delete session2;
-    delete attendee1;
-    delete attendee2;
 
     return 0;
 }
