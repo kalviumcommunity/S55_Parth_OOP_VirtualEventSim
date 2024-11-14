@@ -3,7 +3,7 @@
 using namespace std;
 
 class Session {
-private:
+protected:
     string title;
     string speaker;
     string startTime;
@@ -44,8 +44,25 @@ public:
 // Initialize static variable
 int Session::sessionCount = 0;
 
-class Attendee {
+// Derived class using Single Inheritance
+class Workshop : public Session {
 private:
+    string workshopTopic;
+
+public:
+    Workshop(string title, string speaker, string startTime, string endTime, string topic) 
+        : Session(title, speaker, startTime, endTime), workshopTopic(topic) {
+        cout << "Workshop Constructor called for topic: " << topic << endl;
+    }
+
+    void displayWorkshopDetails() const {
+        displayDetails();
+        cout << "Workshop Topic: " << this->workshopTopic << endl;
+    }
+};
+
+class Attendee {
+protected:
     string name;
     static int attendeeCount;  // Static variable to track number of attendees
 
@@ -74,7 +91,8 @@ public:
     }
 
     void attendSession(const Session& session) const {
-        cout << this->name << " is attending session: " << session.displayDetails() << endl;
+        cout << this->name << " is attending session: ";
+        session.displayDetails();
     }
 
     void displayDetails() const {
@@ -85,21 +103,45 @@ public:
 // Initialize static variable
 int Attendee::attendeeCount = 0;
 
+// Base class for Multiple Inheritance
+class ExclusiveAccess {
+public:
+    void getExclusiveAccess() const {
+        cout << "Access to VIP Lounge and exclusive content." << endl;
+    }
+};
+
+// Derived class using Multiple Inheritance
+class VIPAttendee : public Attendee, public ExclusiveAccess {
+public:
+    VIPAttendee(string name) : Attendee(name) {
+        cout << "VIP Attendee created: " << name << endl;
+    }
+
+    void displayVIPDetails() const {
+        displayDetails();
+        getExclusiveAccess();
+    }
+};
+
 int main() {
-    // Using the Default Constructor
+    // Using Default Constructor
     Session session1;
     Attendee attendee1;
 
-    // Using the Parameterized Constructor
+    // Using Parameterized Constructor
     Session session2("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
     Attendee attendee2("Parth");
 
-    // Display details and counts
-    session1.displayDetails();
-    session2.displayDetails();
-    attendee1.displayDetails();
-    attendee2.displayDetails();
+    // Using Workshop derived from Session (Single Inheritance)
+    Workshop workshop1("Workshop: AI Ethics", "Jane Smith", "11:30 AM", "1:00 PM", "Ethics in AI");
+    workshop1.displayWorkshopDetails();
 
+    // Using VIPAttendee derived from Attendee and ExclusiveAccess (Multiple Inheritance)
+    VIPAttendee vipAttendee("Alice");
+    vipAttendee.displayVIPDetails();
+
+    // Display session and attendee counts
     Session::displaySessionCount();
     Attendee::displayAttendeeCount();
 
