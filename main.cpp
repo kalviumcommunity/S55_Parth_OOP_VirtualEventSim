@@ -69,6 +69,29 @@ public:
     }
 };
 
+// New class: PanelDiscussion
+class PanelDiscussion : public Event {
+private:
+    string topic;
+    string panelists;
+    string startTime;
+    string endTime;
+
+public:
+    // Constructor for PanelDiscussion
+    PanelDiscussion(string topic, string panelists, string startTime, string endTime) 
+        : topic(topic), panelists(panelists), startTime(startTime), endTime(endTime) {
+        cout << "PanelDiscussion Constructor called for topic: " << topic << endl;
+    }
+
+    // Override the displayDetails function
+    void displayDetails() const override {
+        cout << "Panel Discussion on: " << this->topic 
+             << "\nPanelists: " << this->panelists 
+             << "\nTime: " << this->startTime << " - " << this->endTime << endl;
+    }
+};
+
 class Attendee {
 protected:
     string name;
@@ -140,12 +163,14 @@ int main() {
     // Using Parameterized Constructor
     Session session2("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
     Workshop workshop1("Workshop: AI Ethics", "Jane Smith", "11:30 AM", "1:00 PM", "Ethics in AI");
+    PanelDiscussion panel1("Future of AI", "Alice, Bob, Charlie", "2:00 PM", "3:00 PM");
 
     Attendee attendee2("Parth");
 
     // Demonstrating polymorphism with virtual function
     attendee2.attendEvent(session2);       // Attending a general session
     attendee2.attendEvent(workshop1);      // Attending a specific workshop
+    attendee2.attendEvent(panel1);         // Attending a panel discussion
 
     // Using VIPAttendee derived from Attendee and ExclusiveAccess (Multiple Inheritance)
     VIPAttendee vipAttendee("Alice");
