@@ -90,9 +90,16 @@ public:
         cout << "Total Attendees Registered: " << attendeeCount << endl;
     }
 
+    // Overloaded attendSession function (polymorphism)
     void attendSession(const Session& session) const {
         cout << this->name << " is attending session: ";
         session.displayDetails();
+    }
+
+    // Overloaded function to attend a workshop specifically
+    void attendSession(const Workshop& workshop) const {
+        cout << this->name << " is attending workshop: ";
+        workshop.displayWorkshopDetails();
     }
 
     void displayDetails() const {
@@ -103,7 +110,6 @@ public:
 // Initialize static variable
 int Attendee::attendeeCount = 0;
 
-// Base class for Multiple Inheritance
 class ExclusiveAccess {
 public:
     void getExclusiveAccess() const {
@@ -135,7 +141,10 @@ int main() {
 
     // Using Workshop derived from Session (Single Inheritance)
     Workshop workshop1("Workshop: AI Ethics", "Jane Smith", "11:30 AM", "1:00 PM", "Ethics in AI");
-    workshop1.displayWorkshopDetails();
+
+    // Demonstrating function overloading (polymorphism)
+    attendee2.attendSession(session2);       // Attending a general session
+    attendee2.attendSession(workshop1);      // Attending a specific workshop
 
     // Using VIPAttendee derived from Attendee and ExclusiveAccess (Multiple Inheritance)
     VIPAttendee vipAttendee("Alice");
