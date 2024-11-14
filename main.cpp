@@ -2,7 +2,14 @@
 #include <string>
 using namespace std;
 
-class Session {
+// Abstract base class
+class Event {
+public:
+    // Pure virtual function to make this an abstract class
+    virtual void displayDetails() const = 0; // Must be overridden in derived classes
+};
+
+class Session : public Event {
 protected:
     string title;
     string speaker;
@@ -35,7 +42,8 @@ public:
         cout << "Total Sessions Created: " << sessionCount << endl;
     }
 
-    void displayDetails() const {
+    // Override the displayDetails function
+    void displayDetails() const override {
         cout << "Session: " << this->title << "\nSpeaker: " << this->speaker 
              << "\nTime: " << this->startTime << " - " << this->endTime << endl;
     }
@@ -44,7 +52,6 @@ public:
 // Initialize static variable
 int Session::sessionCount = 0;
 
-// Derived class using Single Inheritance
 class Workshop : public Session {
 private:
     string workshopTopic;
@@ -55,8 +62,9 @@ public:
         cout << "Workshop Constructor called for topic: " << topic << endl;
     }
 
-    void displayWorkshopDetails() const {
-        displayDetails();
+    // Override the displayDetails function
+    void displayDetails() const override {
+        Session::displayDetails();
         cout << "Workshop Topic: " << this->workshopTopic << endl;
     }
 };
@@ -64,7 +72,7 @@ public:
 class Attendee {
 protected:
     string name;
-    static int attendeeCount;  // Static variable to track number of attendees
+    static int attendeeCount;  // Static variable to track the number of attendees
 
 public:
     // Default Constructor (Type 1)
@@ -90,16 +98,10 @@ public:
         cout << "Total Attendees Registered: " << attendeeCount << endl;
     }
 
-    // Overloaded attendSession function (polymorphism)
-    void attendSession(const Session& session) const {
-        cout << this->name << " is attending session: ";
-        session.displayDetails();
-    }
-
-    // Overloaded function to attend a workshop specifically
-    void attendSession(const Workshop& workshop) const {
-        cout << this->name << " is attending workshop: ";
-        workshop.displayWorkshopDetails();
+    // Function to attend an event using virtual function
+    void attendEvent(const Event& event) const {
+        cout << this->name << " is attending event: ";
+        event.displayDetails();
     }
 
     void displayDetails() const {
@@ -137,14 +139,13 @@ int main() {
 
     // Using Parameterized Constructor
     Session session2("Keynote: Future of Technology", "John Doe", "10:00 AM", "11:00 AM");
-    Attendee attendee2("Parth");
-
-    // Using Workshop derived from Session (Single Inheritance)
     Workshop workshop1("Workshop: AI Ethics", "Jane Smith", "11:30 AM", "1:00 PM", "Ethics in AI");
 
-    // Demonstrating function overloading (polymorphism)
-    attendee2.attendSession(session2);       // Attending a general session
-    attendee2.attendSession(workshop1);      // Attending a specific workshop
+    Attendee attendee2("Parth");
+
+    // Demonstrating polymorphism with virtual function
+    attendee2.attendEvent(session2);       // Attending a general session
+    attendee2.attendEvent(workshop1);      // Attending a specific workshop
 
     // Using VIPAttendee derived from Attendee and ExclusiveAccess (Multiple Inheritance)
     VIPAttendee vipAttendee("Alice");
